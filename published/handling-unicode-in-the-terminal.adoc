@@ -1,0 +1,458 @@
+// api_set_lang: en
+:title: 
+// api_set_lang: ALL
+:author:       Aryailia
+:date-created: Mon, 16 Nov 2020 01:51:47 +0800
+:date-updated: Mon, 16 Nov 2020 01:51:47 +0800
+:tags:         Programming Terminal Unicode
+:imagesdir: ../images
+
+// api_set_lang: en
+
+Text unfortunately is https://www.unicode.org/reports/index.html[very complicated].
+The terminal use-case is, thankfully, much simpler as it designed strictly for non-proportional fonts (i.e. monospaced with strict adherence to full/half width).
+If you are making a terminal, you can away with not certain things, e.g. https://en.wikipedia.org/wiki/Kerning[kerning] and https://en.wikipedia.org/wiki/Orthographic_ligature[ligatures].
+Because the terminal handles fonts, terminal applications do not have to deal with fallback fonts because different languages (semantic meaning of the text) can for the same text (in-memory representation) can change the glyphs rendered (pixels drawn).{wj}footnote:[
+Levien, Raph. https://raphlinus.github.io/rust/skribo/text/2019/04/04/font-fallback.html[Font fallback deep dive]. 2019-04-04. "Only the locale is set differently, and this has significant effect on the rendering."
+]{wj}footnote:[
+Wikipedia contributors, 'Han unification', __Wikipedia, The Free Encyclopedia__, 16 November 2020, 21:55 UTC, <link:https://en.wikipedia.org/w/index.php?title=Han_unification&oldid=989070634#Examples_of_language-dependent_glyphs[]>
+]
+
+See the Simon Cozens on 'link:https://simoncozens.github.io/fonts-and-layout/history.html[A Brief History of Type]'.
+
+== ASCII: Displaying English
+
+Writing documents in English and any language (e.g. post-1972 Malay) that uses the English script (roman/latin script) is fairly easy.
+Text is typically encoded with 8-bits per character, whose mapping is specified by ASCII.
+ASCII is 7-bit, and the remaining bit is used by (non-standard) ASCII extensions or by UTF-8.
+
+[source,rust]
+----
+fn main() {
+    println!("Hello, World!");
+}
+----
+
+[source,shell-session]
+----
+$ cargo run
+Hello, World!
+$
+----
+
+== Beyond English: UTF-8
+
+=== Text Encoding
+
+The majority of languages however contains characters outside A-Z, a-z, 0-9, punctuation marks, etc. that ASCII encodes.
+French for example contains the c-cedilla 'ç', e.g. Français means the french language in French.
+This goes beyond the scope of current standard of ASCII.
+
+In the past, many countries proposed the own 8-bit encodings suited for their language such as https://en.wikipedia.org/wiki/ISO/IEC_8859[ISO/IEC 8859].
+However, eventually the https://en.wikipedia.org/wiki/Unicode[Unicode] project was founded to standardise the encoding for all text.
+Unicode essentially details a two column table that assigns an ID (a.k.a. a number or code point) to every possible scalar (a.k.a. character), which is different from how it is represent in memory.
+The encoding is similar two-column table that assigns each ID to a byte-representation.
+
+The two popular encodings methods are UTF-8 and UTF-16, both of which can represent the entirety of Unicode.{wj}footnote:[TODO]
+UTF-8 uses anywhere from 1-4 bytes and is the default on Linux; UTF-16 uses 2 or 4 bytes and is the default on Windows.{wj}footnote:[TODO]
+
+
+[source,rust]
+----
+fn main() {
+    println!("Hello, World!");      // English
+    println!("Hola, Món!");         // Catalan
+    println!("ハロー・ワールド！"); // Japanese
+    println!("你好，世界！");       // Chinese
+    println!("\u{1f600}😀");
+}
+----
+
+[source,shell-session]
+----
+$ cargo run
+Hello, World!
+Hola, Món!
+ハロー・ワールド！
+你好，世界！
+😀😀
+$
+----
+
+The last three lines that contain Japanese, Chinese, and emoji are all composed of full-width (全角) characters; the first two lines are all half-width (半角) characters.
+This size is known a character's http://www.unicode.org/reports/tr11/[(east asian) width].
+That is the display width of an emoji should be exactly two English letters in a monospaced font.
+However, some monospaced fonts do not follow this convention, so even if your terminal displays this correctly, your browser might not.
+
+This https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms[Wikipedia article] half- and full-width originated from the Japanese terminal usage, with half-width coming first.{wj}footnote:[
+TODO Find source for origins of half-width and full-width
+]
+Today, many Japanese and Chinese articles will use full-width latin script (e.g. 'ｈｅｌｌｏ　ｗｏｒｌｄ') so that mixed text aligns in a pleasing manner.
+In GUI (non-terminal) contexts, half-width text is variable width (e.g. 'l' and 'm' in Times New Roman are different widths); full-width text is fixed width.
+
+=== Encodings For Lay Person
+
+Some random places you will actually have deal with text encoding outside of programming.
+
+On web browsers, sometimes a site will load with the text as gibberish, typically a sign that the encoding is wrong—or that you are missing a font.
+Though you can specify a priority list of language defaults, sometimes your browser will still choose incorrectly.{wj}footnote:[For setting the encoding, see the MDN https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta[entry on meta]. e.g. `<meta charset="utf-8">` ]
+Thus browsers provide an in-menu option to change text encoding.
+I personally have only needed to do this with the ocassional Shift_JIS-encoded (Japanese) or GBK-encoded (Chinese) sites.
+
+Sometimes when installing Linux, the installer will ask you to choose your locale.
+This is explicitly asking you to choose your encoding.
+
+[source,sh]
+----
+# On Linux, to list locales, you can:
+localectl list-local
+# or you could
+cat /etc/default/libc-locales
+# e.g. en_GB.UTF-8 UTF-8
+#      ar_AE       ISO-8859-6
+#      ar_AE.UTF-8 UTF-8
+
+# ar_AE is Arabic, United Arabic Emerates
+# en_GB is English, Great Britain
+----
+
+https://en.wikipedia.org/wiki/ISO/IEC_8859-6[ISO-8859-6] is also known as Latin/Arabic.
+In Linux, most locales (extra defaults like time format/date format/etc. + encodings) have now standardised on UTF-8 as their encoding.
+
+In Windows, in the past, cmd only supported UTF-16 (but, as of Win10, it does now).{wj}footnote:[
+Turner, Rich, 'Windows Command-Line: Unicode and UTF-8 Output Text Buffer', __Microsoft__, 15 November 2018, <link:https://devblogs.microsoft.com/commandline/windows-command-line-unicode-and-utf-8-output-text-buffer/[]> "Back then, a decision was made to represent each text character as a fixed-length 16-bit value (UCS-2). Thus, the Console’s text buffer contains 2-byte wchar_t values per grid cell, x columns by y rows in size."
+]
+I do not think a full terminal workflow not even possible on Cmd or PowerShell, so this is mostly trivia.
+
+One place you would run across these encodings in Windows is when saving files with Notepad.exe, which can cause problems when transferring to Mac/Linux.
+In fact, if you were to type '你好' into Notepad and save to ASCII, Notepad would not let you.
+
+
+== Editing Text in the Terminal: Escape Codes
+
+Since we write to the terminal via a stream,  There are several ways to delete this character:
+
+. Overwrite by moving the cursor then printing
+. Moving then cursor then using erase ANSI escape codes
+
+.Overwite Example
+[source,rust]
+----
+// Include binary
+fn main() {
+    let cursor_left = "\u{001b}[D";
+    print!("Hello, World!");
+    print!("Hello, World!{}{}", cursor_left, cursor_left);
+    print!("Hello, World!{}{}", cursor_left, cursor_left);
+    print!("Hello, World!{}{} ", cursor_left, cursor_left);
+    println!();
+}
+----
+
+[source,shell-session]
+----
+$ cargo run
+Hello, World
+Hello, World!
+Hello, Worl !
+$
+----
+
+.Erase ANSI Code Example
+[source,rust]
+----
+// Include binary
+fn main() {
+    let cursor_left_two = "\u{001b}[2D";
+    let erase_to_line_end = "\u{001b}[0K"
+    print!("Hello, world!");
+    print!("Hello, world!{}", cursor_left_two);
+    print!("Hello, world!{}{} ", cursor_left_two, erase_to_line_end);
+    println!();
+}
+----
+
+[source,shell-session]
+----
+$ cargo run
+Hello, world!
+Hello, world!
+Hello, worl
+$
+----
+
+Note that these have different implications for cursor management.
+
+[source,rust]
+----
+fn main() {
+    let cursor_left_two = "\u{001b}[2D";
+    let erase_to_line_end = "\u{001b}[0K"
+    println!("Hello, World!{} a", cursor_left_two);
+    println!("Hello, World!{}{}a", cursor_left_two, erase_to_line);
+}
+----
+
+[source,shell-session]
+----
+$ cargo run
+Hello, worl a
+Hello, worla
+$
+----
+
+=== Manipulating Full-Width Text
+
+The problem is that full-width text takes up two spaces: do you delete on the left space or the right space?
+Unfortunately, this is somewhat implementation dependant.
+
+[source,rust]
+----
+fn main() {
+    let cursor_left = "\u{001b}[D";
+    println!("你好{} ", cursor_left);
+    println!("你好{}{} ", cursor_left, cursor_left);
+}
+----
+
+.Alacritty 0.5.0
+[source,shell-session]
+----
+$ cargo run
+你好
+你
+$
+----
+
+.st 0.8.4
+[source,shell-session]
+----
+$ cargo run
+你
+你
+$
+----
+
+The safest solution seems to either:
+
+. move the cursor to the left half and then print two spaces/reprint the line (then move cursor again to the appropriate location)
+. move the cursor to the left half and use a clear-buffer-end/-line-end/etc. escape code
+
+Another issue is, if the text is navigable, the user expects left/right key to move one character.
+You cannot read the terminal buffer, so to support keyboard navigation, you have to keep copy of everything you write to the screen and be able to calculate the Unicode width.
+A nice crate for the latter is https://github.com/unicode-rs/unicode-width[Unicode-width].
+
+However, this is still not sufficient: the display width of text actually depends on your font.
+This can most clearly be seen by combining marks, e.g. U+200D, the zero-width joiner, frequently used by emoji.
+
+[source,rust]
+----
+fn main() {
+    // The following should all display only one full-width character
+    // The font your browser is using might display these incorrectly
+    println!("\u{1f469}");                  // 👩
+    println!("\u{1f52c}");                  // 🔬
+    println!("\u{1f469}\u{200d}\u{1f52c}");  // 👩‍🔬
+    // Notice how the third is a combination of the previous two with the zero-width joiner
+}
+----
+
+SVG image renderings in case your font does not support them:{wj}footnote:[
+'OpenMoji 13.0: SVG color', _Github_, 13 November 2020,
+<link:https://github.com/hfg-gmuend/openmoji/releases/[]>
+]
+
+. Woman: image:emoji-1F469.svg[,20,alt="👩",opts=inline]
+. Microscope: image:emoji-1F52C.svg[,20,alt="🔬",opts=inline]
+. Combination of the two as a female scientist: image:emoji-1F469-200D-1F52C.svg[,20,alt="👩‍🔬",opts=inline]
+
+TODO put actual specific fonts as examples. A set for Win10 and a set for Linux.
+
+
+
+=== Word-Wrap Example
+[source,rust]
+----
+fn main() {
+    // Adjust this to your terminal size
+    for i in 0.20 {
+        print!("abcdefghijklmnopqrstuvwxyz");
+    }
+    let cursor_up = "\u{001b}[A";
+    let erase_to_line_end = "\u{001b}[0K"
+    print!("{}{}", cursor_left_two, erase_to_line);
+    println!();
+
+    println!(); // Without the this, your prompt will overwrite the wrapped text
+}
+----
+
+.This is dependent on your terminal window width, this example is 80-columns wide
+[source,shell-session]
+----
+$ cargo run
+abcdefghijklmnopqrst
+cdefghijklmnopqrstuvwxyz
+$
+----
+
+
+
+== Combining Right-to-Left and Left-to-Right Text: Bidi
+https://www.w3.org/International/articles/inline-bidi-markup/uba-basics
+
+Most languages are left-to-right (LtR).
+The Wikipedia article on https://en.wikipedia.org/wiki/Right-to-left[right-to-left] (RtL) lists eleven current languages and fifteen ancient scripts.
+
+RtL documents should in general be right aligned.{wj}footnote:[
+Omniglot sample texts for:
+https://omniglot.com/writing/arabic.htm#samp[Arabic],
+https://omniglot.com/writing/thaana.htm#samp[Thana],
+https://omniglot.com/writing/syriac.htm[Syriac],
+https://omniglot.com/writing/mandaic.htm[Mandaic],
+https://omniglot.com/writing/samaritan.htm[Samaritan],
+https://omniglot.com/writing/mende.htm[Mende],
+https://omniglot.com/writing/nko.htm[N'Ko] (see http://kanjamadi.com[Kanjamadi.com]),
+https://omniglot.com/writing/wolof.htm[Wolof],
+https://omniglot.com/writing/adlam.htm[Adlam],
+https://omniglot.com/writing/rohingya.htm[Rohingya].
+]
+Vim deals with this by having a config setting `:set rightleft` that you will have to toggle.{wj}footnote:[
+Mooler, Bram, 'Vim Reference Manual: Options', __Sourceforge__, 22 March 2011, <link:http://vimdoc.sourceforge.net/htmldoc/options.html#'rightleft'[]>
+]
+
+Mixing LtR and RtL text together further complicates the matter.
+The way Unicode handles this case is known as https://www.unicode.org/reports/tr9/[Bidi],
+about which the W3C has a https://www.w3.org/International/articles/inline-bidi-markup/uba-basics[friendly article].
+
+.An illustrative example for how mixed text works for LtR-base-direction documents
+[source,rust]
+----
+// Assume the numbers represent a RtL script
+let in_memory_order = "abcde12345abcde";
+let display_order =   "abcde54321abcde";
+----
+
+
+A more intuitive approach would be to just play with how highlighting in text selection works:
+
+.Start the selection at different points and move the mouse/finger around
+```
+English  اَلْعَرَبِيَّةُ  Text
+
+```
+See the W3C article above for a RtL-base-direction document.
+
+While this should be handled by your terminal, most terminals do not support Bidi.
+XVilka https://gist.github.com/a0e49e1c65370ba11c17[enumerates which terminals support Bidi].
+
+
+Neither Vim nor Neovim support Bidi for mixed text (but does support base-direction switching).{wj}footnote:[
+TODO vim support
+]{wj}footnote:[
+'Issue 553: Bidi language support', _Github_, 17 Apr 2014, <link:https://github.com/neovim/neovim/issues/553[]>
+]
+Emacs has `bidi-display-reordering` and `bidi-paragraph-drection` out of the box.{wj}footnote:[
+Yisrael Dov L, 'Emacs Is Great - Ep 40 pt 2, Hebrew/ Bidirectional Text', __Youtube__, 27 March 2019, <link:https://youtu.be/y3oLG-6KTaE[]>
+]
+
+== Vertical Text
+
+The Mongolian language 'is the only language today that requires vertical writing'.
+{wj}footnote:[r12a,
+'Issue 6: Should traditional mongolian text in horizontal writing modes be horizontal or vertical?',
+__Github, W3C__, 28 February 2017,
+<link: https://github.com/w3c/mlreq/issues/6[]>.
+ '[from Andrew West\] In printed books and articles Mongolian text embedded in horizontal text (English, French, Russian, Chinese, ...) is usually rotated and laid out horizontally left-to-right.'
+ '[From Liang Hai\] Off the off-topic — I consider it's dangerous for Mongolian users not to promote a horizontal variant today when they use the only script that requires vertical writing'.
+]
+Traditionally, Chinese, Japanese, and Korean were all ordered vertically, however they all have since adapted to writing left-to-right.  
+The country, Mongolia, and the province of China, are the main homes of the Mongolian language.
+
+:fn-sfreader: footnote:[SFReder, 'Mongolia to restore Traditional Alphabet', languagehat.com, 15 April 2020, <link:http://languagehat.com/mongolia-to-restore-traditional-alphabet[]>]
+
+In Mongolia, the official language is Mongolian and Mongolian is written with Cyrillic.
+Kids do learn the traditional script in school, but it rarely use it outside of the classroom.{wj}{fn-sfreader}
+The Mongolian government announced that by 2025, the country would transition to a two-script system for 'official communications, identity cards, and public display of the alphabet'.{wj}footnote:[
+'Mongolian government seeks to spread official use of traditional alphabet by 2025',
+__Nationalia__, 25 March 2020,
+<link:https://nationalia.info/new/11301/mongolian-government-seeks-to-spread-official-use-of-traditional-alphabet-by-2025[]>
+]
+However, 'there were numerous such plans and proposals since 1990. All failed.'{wj}{fn-sfreader}
+
+In Inner Mongolia, the official language is Chinese and Mongolian is written with the traditional Mongolian script, _bichig_.
+Announced in June, and enacted on on August 26, 2020, China new policy for all schools, mainly Mongolian-Chinese bilingual schools, transitions three classes that were taught in Mongolian to being taught in Chinese.{wj}footnote:[
+Baioud, Gegentuul, 'Will language education reform wipe out Mongolian language and culture.' 30 August 2020. <link:http://southmongolia.org/en/338[]>
+]{wj}footnote:[
+内蒙古教育发布 (Inner Mongolia Education Annoucements),
+'秋季学期起我区民族语言授课学校小学一年级和初中一年级使用国家统编语文教材'
+(Starting from the Autumn semester [in Inner Mongolia\], 1st and 7th Grade will transition from using ethnic language material to using the national language material),
+_微信 (Wechat)_, 26 August 2020,
+<link:https://mp.weixin.qq.com/s/LT7jaG_RgDsusj1WVmNcpg[]>,
+Archived at: <link:http://www.bynr.gov.cn/xxgk/zcfg/zcfg_1/202008/t20200831_325862.html[]>
+]{wj}footnote:[
+admin,
+'Өвөр Монголоос мэдээлж байна:Тэнд юу болж байгаа талаарх бүрэн мэдээлэл'
+(Reported from Inner Mongolia: Full Information on What Is Happening There)
+, _greg.mn_, 31 Aug 2020, <link:https://gereg.mn/news/62508[]>
+]
+Thus, the use of Mongolian script in Inner Mongolia is likely to change in the coming years.
+
+TODO find better source: Due to bichig's long-standing, unresolved problems in Unicode, legacy documents and websites often use the https://en.wikipedia.org/wiki/Private_Use_Areas[Private Use Areas] of Unicode or use https://en.wikipedia.org/wiki/GB_18030[GB18030] instead of Unicode.{wj}footnote:[
+Wikipedia contributors, 'Mongolian language', __Wikipedia, The Free Encyclopedia__, 17 November 2020, 21:49 UTC, <link:https://en.wikipedia.org/w/index.php?title=Mongolian_language&oldid=989246080#Unicode[]>
+]
+
+There appear to be several approaches to how to typeset mixed Mongolian and horizontal languages.
+As with most electronic medium, one approach is to typeset Mongolian left-to-right with its glyphs rotated 90 degrees as demonstrated by http://bolor-toli.com/[Bolor dictionary], the biggest translation Mongolian dictionary.{wj}footnote:[
+badaa, 'Issue 6: Should traditional mongolian text in horizontal writing modes be horizontal or vertical?', __Github, W3C__, 23 September 2017,
+<link:https://github.com/w3c/mlreq/issues/6#issuecomment-423782527[]>
+]
+
+.And, indeed, terminals will also display traditional Mongolian script rotated 90 degrees
+[source,shell-session]
+----
+$ abcdefg ᠮᠤᠩᠭᠤᠯ
+----
+
+Please refer to this https://www.w3.org/International/articles/vertical-text/index-data/tests/mongolian[W3C interactive webpage] to see how Mongolian is rotated in horizontal-base-direction text, how Chinese/Japanese/Korean remains unrotated regardless of base direction, how English is rotated in vertical-base-direction texts.
+
+For Chinese and Japanese texts, it is conventional in a top-to-bottom base direction to align English also to top-to-bottom.{wj}footnote:[
+TODO Find citation or just a picture or just make an example
+]
+Additionally, after the age of the internet, Chinese and Japanese began to write left-to-right.{wj}footnote:[
+TODO Find citation
+]
+Chinese and Japanese are also right-to-left since vertical texts were written bottom-to-top then right-to-left and, even today, many name plaque are written one horizontal line right-to-left.
+However Chinese-Arabic texts do not make use of this, i.e. in a horizontal-right aligned document, Arabic is right-to-left; Chinese is left-to-right, e.g. the Wikipedia article on https://ar.wikipedia.org/wiki/%D8%AA%D8%A7%D9%8A%D9%88%D8%A7%D9%86[Taiwan].
+
+
+
+== Conclusion
+
+Although Bidi should be handled by the terminal, it often isn't.
+Not supporting Bidi is like asking your user to read text backwards, while not impossible, it is unfeasible beyond a few words.
+The most complete solution is an opt-in to 
+
+In terminal applications, there is no way to pre-compute the display width of a string: you need to know the font being used.
+The only solution to reliably determine the display width, which I can think of, is to query the cursor position after every print command.
+
+For horizontal-vertical mixed texts, I am not really sure what the correct approach is.
+With the non-proportional font of a terminal, screen space is a scarce resource, and aligning a sentence with a mix of both alignments would take up a lot of space.
+For Mongolian texts,  it is 'acceptable' to rotate Mongolian text by 90 degrees and display it left-to-right.
+Chinese and Japanese texts are readable either left-to-right, right-to-left, or bottom-to-top and already have standard solutions.{wj}footnote:[
+TODO Maybe I need to cite this?
+]
+
+== Resources
+
+* fnky's https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797[ANSI escape codes reference]
+* XVilk's https://gist.github.com/XVilka/a0e49e1c65370ba11c17[Bidi terminal reference]
+* W3C's interactive https://www.w3.org/International/articles/vertical-text/index-data/tests/mongolian[test page] for understanding how to typeset traditional Mongolian text, i.e. vertical, horizontal left-to-right, horizontal right-to-left, etc.
+* https://terminal-wg.pages.freedesktop.org/bidi/[Freedesktop/XDG draft proposal] to standardise handling RtL and Bidi in text terminals
+* https://www.unicode.org/reports/index.html[Unicode Consortium technical reports] on Unicode
+* Raph Levien on the https://raphlinus.github.io/text/2020/10/26/text-layout.html[full tech stack for rendering text]
+* The Wikipedia article on https://en.wikipedia.org/wiki/Han_unification#Examples_of_language-dependent_glyphs[Han Unification] for a nice list to illustrate how just knowing the text is insufficient to know what the character should look like (you need to know the intended language too). However, I am uncomfortable with the lack of citations on each glyph. Perhaps cross-referencing with https://glyphwiki.org would be a good idea.
+* Raph Levien's post titled 'link:https://raphlinus.github.io/rust/skribo/text/2019/04/04/font-fallback.html[Font fallback deep dive]'
+* Alex Beingessner's post titled 'link:https://gankra.github.io/blah/text-hates-you/[Text Rendering Hates You]', which touches the same topic as this article but focuses more on Unicode and rendering.
+* LI Haoyi's https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html[post] on much the same subject but with animated examples and Python
+

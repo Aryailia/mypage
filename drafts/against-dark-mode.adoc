@@ -1,0 +1,104 @@
+// api_set_lang: en
+:title: 
+// api_set_lang: jp
+:title: 
+// api_set_lang: zh
+:title: 
+// api_set_lang: ALL
+:author:       
+:date-created: Tue, 24 Nov 2020 21:51:10 +0800
+:date-updated: Tue, 24 Nov 2020 21:51:10 +0800
+:tags:         
+
+// api_set_lang: en
+
+The experience of a web developer is listening to many k
+My audience is readers.
+
+
+== Dark mode looks better
+
+You cannot argue with this.
+However
+Web designers have to cater
+Trends regarding the increasing
+
+
+== Dark mode makes it easier to read better
+
+== What causes eye strain
+
+
+
+=== On saving power
+
+The short answer is: only if you have an OLED monitor.
+
+A small note on terminology, a monitor and a TV (and a screen) are all the same thing, just the intended use case is different.
+
+The main power draw of a monitor is the light production.^citation-needed^
+Light produce
+
+As of 2020, there are four main categories of monitors:
+
+. _Reflective_ - To browse web, we only really use *E Ink* displays (e.g. Nook, Kindle). These work by electrically rotating pigments between a black/colour and white state. Light from the outside goes through the touch screen, then reflects off this pigment. Since reflecting light does not consume any power, neither light nor dark mode make a different to the power consumption of these displays.
+
+. _Transflective_ - This just means reflective but with device itself producing light. Again, *E Ink* displays are the only transflective device we use to browse the web. These types of screens add a third light emitting sheet on top of the touch screen.{wj}footnote:[
+O'Connel, Frank, 'Light Reading: How the Kindle Paperwhite Works', 'The Light Guide: The guide acts much like a flattened-out fiberoptic cable.'
+]
+Once again, neither light nor dark mode makes no difference to the power consumption as the frontlight is controlled separately from the display pixels.
+
+. _Transmissive_ - These work by having a constant backlight that then is filtered for brightness and colour before projecting to the screen. Because the backlight is a constant brightness (the primary power consumer) and colouring is controlled by filtering, neither light nor dark mode make a difference to the power consumption.
++
+LCD screens work by having a backlight that sends light through a polariser, an electrode, liquid crystals, a second (opposite) electrode, a second polariser, a colour filter, and finally the screen. The salient property of liquid crystals is their ability to rotate the polarisation of light on to scale with an electrical signal. And light is progressively blocked more and more the closer you get to perpendicular orientations of the polarisation. This then gets passed through a tiny colour filter (R, G or B) to display colour.
++
+*LCD*, *LED*, and *QLED* screens are all LCDs, differing mainly by backlight mechanism. LCD in marketing means a fluorescent backlight, LED means a more efficient LED backlight, and QLED means pixel-gird of colour backlighting (so tiny R, G, and B lights) and no front colour filter.  *TN*, *IPS*, *VA*, etc. refer to different configurations for the orientation of the polarisers and how the liquid crystals work. But these all boil down to a backlight projected through an fancy filter to the screen.
+
+. _Emissive_ - Currently *OLED* is the only commercial technology that is an emissive display. These work by having each colour emitted directly by a directly below the screen. Because OLEDs work by directly controlling the light of individual pixels, dark mode actually does reduce power consumption. OLEDs are capable of true blacks (because the pixels are actually off) and darker colours are because less power is going each pixel.
++
+*AMOLED* and *PMOLED* are both OLEDs, but a device we use for web browsing is most certainly a AMOLED. This distinction in active matrix (AM) vs passive matrix (PM) eixsts also in LCDs (e.g. https://en.wikipedia.org/wiki/Dual_Scan[DSTN]), however all modern consumer monitors are AM LCD. Active vs passive differ how they address individual pixels, and so do not differ in how they respond to light or dark mode.
++
+*CRT* monitors are also emissive. They work by shooting electrons from a cathode onto a photoluminescence screen (glows when hit by photons/electrons), making the pixels glow for a brief moment. From the cathode, electrons go through a controlling grid to straighten their trajectory and control the resulting brightness, passing through deflecting plates to map onto the x-y axis, hitting the photoluminescent sheet, which shines through the glass. Because, like OLED monitors, the source of light is emitted at the screes, CRTs do benefit from dark mode.
++
+*Plasma* monitors work essentially the same as OLED monitors except instead of an organic LED, they use many, tiny fluorescent lights (fluorescent lights work via plasma, which is essentially conductive gas). Thus Plasma monitors, through the same mechanics as OLED monitors, do benefit from dark mode.
+
+
+In short, dark mode only means less power consumption if you have an OLED (PMOLED or AMOLED), Plasma monitor, or CRT monitor, however the latter two are going out of style.{wj}footnote:[
+Willcox, James K., 'Plasma TV is dead, so go buy one', _Consumer Reports_, 9 July 2014,  <link:https://www.consumerreports.org/cro/news/2014/07/plasma-tv-is-dead-so-go-buy-one/index.htm[]> [accessed 25 Novemeber 2019\]
+]
+LCD screens, being older and cheaper in comparison to OLEDs, tend to be the norm for laptops and phones, the primary.
+
+It does actually increase the longevity of OLED.
+
+
+https://elprocus.com/cathod-ray-tube
+
+== Less Eye Strain
+
+* https://brightfocus.org/macular/article/are-bright-lights-damaging-eye[Are bright lights damaging eye]
+* https://www.aao.org/eye-health/diseases/what-is-eye-strain
+* https://www.tandfonline.com/doi/abs/10.1080/00140139.2015.1100757
+* https://www.quora.com/Is-it-better-to-look-at-a-computer-screen-with-high-brightness-or-low-brightness?share=1
+* https://tidbits.com/2019/05/31/the-dark-side-of-dark-mode/
+* https://www.androidauthority.com/dark-mode-1046425/
+* Google once said YouTube’s dark mode could save between 15% and 60% battery life
+* photophobia, astigmatism, headaches?
+
+
+=== In Dark Environments
+
+=== In Well-lit Environments
+
+== Actual positives
+
+
+
+// api_set_lang: jp
+== 第一話
+
+ここから始まります
+
+// api_set_lang: zh
+== 第一个话题
+
+從此開始

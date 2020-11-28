@@ -1,0 +1,158 @@
+// api_set_lang: en
+:title: 
+// api_set_lang: zh
+:title: 
+// api_set_lang: ALL
+:author:       
+:date-created: Mon, 23 Nov 2020 16:48:53 +0800
+:date-updated: Mon, 23 Nov 2020 16:48:53 +0800
+:tags:         
+
+// This is overwritten during compilation by file API
+:imagesdir: ../images
+
+// api_set_lang: en
+
+:kaiser: Kaiser
+:todo: ^[todo]^
+
+// http://aryailia.blogspot.com/2017/05/supplements-to-tae-kims-guide-to.html
+Just a random list of more niche grammar points that I find learners following JLPT or Tae Kim's guide coming acorss.
+
+== Particles and Inflections
+
+* を with intransitive verbs (https://japanese.stackexchange.com/questions/12799/[Japanese Stack Exchange])
+* On transitive adjectives (http://www001.upp.so-net.ne.jp/ketoba/nikakukeiyoushibun.htm[小矢野哲夫]), e.g. 私が君が好き
+* https://japanese.stackexchange.com/question/14541/[-の can mark the subject in relative clauses],
+// TODO regarding using を only in relative clauses
+// Constrastive use of は
+* 〜て + は {todo}
+* 〜て + から {todo}
+* 〜て + の: https://japanese.stackexchange.com/questions/5212[this needs a better link, 知っての通り]
+* 〜なくて vs 〜ないで vs 〜ず vs 〜ずに https://japanese.stackexchange.com/questions/48065/[(Japanese Stack Exchange)] https://www.italki.com/question/201172[(iTalki)] https://www.youtube.com/watch?v=jQtqTPSPEcY[(日本語の森)]
+
+* Conjoining verbs/adjectives to clauses: https://japanese.stackexchange.com/questions/12642/[中止形  (aka the 連用形) vs te-form]. 中止形 is less restrictive than the て形. https://etd.ohiolink.edu/%21etd.send_file?accession=osu1392805640&disposition=inline[See Kyouko Tokashiki's paper (1989)].
+* On listing nouns:
+// TODO: find explanation of に, also this link see
+** https://japanese.stackexchange.com/questions/6020/[-に]
+** だ → で, adverbially form of the copula.
+** http://xn--xxtu55ei6gs0a.com/koza/andor.html[おやび and ましくは bind closely; ならびに and または bind loosely]
+
+* https://japanese.stackexchange.com/questions/17649/[Conjugating to ～た can be for perfective aspect, past tense, or just politeness]. See these notes about historical/literary present in Japanese in http://hasegawa.berkeley.edu/Papers/Hasegawa1999.pdf[this paper by Hasegawa Yoko].
+
+* 「AをBに」is short for 「(Aを)Bにして」, e.g. 学生を対象に心理実験を行った。 (「学生を」is not the object of 「行った」){wj}footnote:["に." __Wiktionary, フリー多機能辞典__. 2020年6月18日14:19 (UTC). 2020年11月24日06:52,
+<link:https://ja.wiktionary.org/w/index.php?title=%E3%81%AB&oldid=1301061[]> '「AをBに」の形で、(Aを)Bにしての略。そのような物として扱って。']
+* For negative sentences with a subordinate clause, having the verb of the subdorinate clause in negative form and the final verb (the matrix verb) postive tends to sound more natural. {todo}
+//*Verbal noun phrases. A common style of Japanese is ending with nouns known 体言止め to form predicated sentences without having a final verb. This includes both nouns where する is implied marked as vs in EDICT for verb-suru (eg. 再起動、情報収集) as well as nouns where する does not make sense (eg. ナイフ、こと). [Found only one paper describe other cases
+//
+//    パソコンを再起動。
+//    今日は一日中情報収集。
+//    右からナイフ！ (As in slashed as a verb) [Need source?]
+//    飯は一定した時間内に食べること。 [Need source.]
+
+* Some useful combinations of particles where order matters
+
+** との. Just と and の applied to the same word. Note that のと would be nominalization use of の
+** への. Just へ and の applied to the same word. One way to look at this is an inflection of へ to accept nouns.
+** からの
+** には. は deletes が and を, ({kaiser} 340) がは→は and をは → は.{todo}
+
+* https://japanese.stackexchange.com/questions/14218/14220#14220[On using the -の particle twice in a row]
+
+* https://japanese.stackexchange.com/questions/6833/[The imperative ～よ for 一段 verbs is old and literary but still in use today]
+
+* On https://japanese.stackexchange.com/questions/1395/[こと vs の] as nominalisers
+* Lesser-known categories for 形容動詞 (na-adj) (Wikipedia's https://en.wikipedia.org/wiki/Japanese_equivalents_of_adjectives[full list])
+** https://japanese.stackexchange.com/questions/1013/[〜たる adj. and its inflections]
+** http://jisho.org/search/%23words%20%23adj-f[Prenominals] (なる-adj and 連体詞). These are words that only can appear in 連体形, in other words they must precede a noun and cannot inflect.
+** https://japanese.stackexchange.com/questions/920/[の-adj and の・な-adj]
+
+
+== Notes on specific words
+
+* 「-を好き」 becoming acceptable in the Tokyo dialect https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q1345796783[(知恵袋)]
+* 「〜が分かる」vs 「〜を分かる」(https://oshiete.goo.ne.jp/qa/4051537.html[知恵袋]) https://forum.wordreference.com/threads/%E3%81%8C-or-%E3%82%92-with-%E3%82%8F%E3%81%8B%E3%82%8B.642672/[(WordReference)]
+* こと vs の https://japanese.stackexchange.com/questions/1395/[(Japanese Stack Exchange)]
+* These are equivalent 「一箇所」、「一ヶ所」、「一ヵ所」、「一か所」、「一カ所」(katakana)
+//* ものの、のに、けれども｜が、ながら、でも｜～ても
+//* 間, あいだ vs ま.
+//* 開く, あく vs ひらく.
+//* で+も vs でも [Expand on this][Kasier et al. 326]
+* ～が分かる vs ～を分かる.
+//* あまり、ぜったい、だれでも、全然、etc. are used differently in positive and negative sentences
+* https://japanese.stackexchange.com/questions/794/[全然 in positive sentences is seen as improper Japanese, but younger generation starting to use it]
+** が is regular "know" or "understand"
+** を is a becoming acceptable to use recently to indicate the effort put into trying to to understand. [English]
+** https://japanese.stackexchange.com/questions/5988/[分かる cannot conjugate to the potential]
+* http://abacus.bates.edu/%7Ekofuji/StudyResources/kanji.html[A list of Japanese prefixes and suffixes]
+* Dual nature of 「ため」 https://japanese.stackexchange.com/questions/5069/[here] and https://japanese.stackexchange.com/questions/34119/[here]
+* Japanese's verbing: ru-verbs, る言葉. (https://oshiete.goo.ne.jp/qa/7753483.html[教えて！goo]) (https://japanese.stackexchange.com/questions/24351/24352#24352[Japanese Stack Exchange])
+
+== Spoken Language
+
+* Common contractions
+** ～て + いる → てる (continuative)
+** ～て + おく → とく (readying or in preparation)
+** ～て + おる → とる (continuative, おる is dialectal equivalent of いる)
+** ～ない｜～ぬ → ん (negation)
+** http://www.jgram.org/pages/viewOne.php?tagE=teha[～ては → ～ちゃ] (て形 + は)
+** http://www.jgram.org/pages/viewOne.php?tagE=teha[～では → ～じゃ] (である/て形 + は)
+** ～ない → ねぇ (negation, rough)
+** http://maggiesensei.com/2011/10/14/%E3%81%98%E3%82%83%E3%81%82%EF%BC%89%EF%BC%86%E3%80%80%E3%82%8A%E3%82%83%E3%81%82%EF%BC%89-jaa-ryaa-casual-contraction/[～れば → りゃ] (conditional)
+
+* Pronouncing four and seven: https://japanese.stackexchange.com/questions/328/how-to-choose-between-%E3%82%88%E3%82%93-yon-vs-%E3%81%97-shi-for-%E5%9B%9B-4-and-%E3%81%97%E3%81%A1-shichi-vs[Counting up use し/しち but counting down use なな/よん]. Not all natives follow this rule. You count up with し and しち to escape (count away from) father Death and count down avoiding them to not close in on (count towards) Death.
+
+* Pitch accent {TODO}
+
+* On ぢ・づ: In Standard Modern Japanese, ず・づ are the same sound as ず, じ・ぢ are the same as じ. The four may have merged or split in dialects, but younger generation is becoming more two-kana based. However in Standard, ず・づ are allophones and じ・ぢ are allophones, so all sounds can technically be heard in Standard. See http://www.imabi.net/yotsugana.htm[Yotsugana in Imabi].
+
+.Different regions distinguish different sets of sounds.
+image::Yotsugana.png[Map of the Yotsugana usage in Japan,300]
+footnote:[
+Enirac Sum, 'File:Yotsugana.png', __Wikipedia, The Free Encyclopedia__. Wikipedia, The Free Encyclopedia, 11 May 2008,
+<link:https://en.wikipedia.org/wiki/File:Yotsugana.png[]>
+]
+
+== Writing and Language Conventions
+
+* Commas almost always bear no grammatical value (ie. sentences are equivalent without them), Commas are only necessary when serving to separate sentences https://japanese.stackexchange.com/questions/9764/[(Japanese Stack Exchange)] or occasionally replacing an omitted particle (See https://japanese.stackexchange.com/questions/9764/[無助詞 zero-postposition], and http://www.guidetojapanese.org/forum/viewtopic.php?id=1877[more examples]). 
+* https://japanese.stackexchange.com/questions/34320/[いう vs 言う]
+* https://japanese.stackexchange.com/questions/15141/[Writing conventions for what to write in kanji and kana] and https://japanese.stackexchange.com/questions/15713/[more]. Generally function words are in kana, content in kanji, and a number of set phrases.
+
+* Enumerating みる:
+** ～てみる "to try " auxiliary verbs are always in hiragana
+** みたい(な) "-like" na-adj and should be written in hiragana (Origin is: を見たやう or を見たよう post-phonetic shifts) {todo}
+** 見る/観る/etc. "to see" should be in kanji
+
+* Pre-script reform spelling https://en.wikipedia.org/wiki/Historical_kana_orthography[(En Wiki)] https://www.imabi.net/kanaorthography.htm[(Imabi)]
+
+* Verb Groups (these are all equivalent) [Find better links]
+** Explanation u-verbs and ru-verbs from masu-stem. Justification: https://japanese.stackexchange.com/questions/9624/[leads to a cleaner listing of their characteristics]
+** 一段 vs 五段. Refers to how six stems of the verb are either in one https://japanese.stackexchange.com/questions/36886/[段] (all share one vowel) go to all five (go to all vowels).
+** Class 1 vs Class 2 corresponds to . Arbitrary in other words.
+
+* Less commonly discussed forms along the politeness scale: 侮蔑語、尊大語、＜常体｜タメ口｜通常語｜平常語＞、ですます、http://www.imabi.net/lightkeigo.htm[軽い敬語]、丁寧語、尊敬語
+
+* https://japanese.stackexchange.com/questions/36310/[On the Japanese tradition of linguistics does not recognise the te-form]
+
+== Random
+
+* On the bi-subject sentences (https://japanese.stackexchange.com/questions/9788/[Japanese Stack Exchange]), e.g. 「彼が髪が長い理由は…」
+* A supposedly comprehensive enumeration of all the particles in Japanese (https://nihongoichiban.com/home/japanese-grammar-particles/[Nihongo Ichiban])
+* ニ重 and 三重敬語 in modern Japanese is only used as part of 最高敬語 https://ja.wikipedia.org/wiki/%E6%9C%80%E9%AB%98%E6%95%AC%E8%AA%9E[(JP Wiki)] when talking about the emperor.
+* http://www.asahi-net.or.jp/~qm4h-iim/ktb019.htm[Godan verbs that did not go through the u-sound shift for an irregular て形]: 問うて・とうて、乞うて・こうて、厭うて・いとうて、負うて・おうて、のたまうて
+* https://ja.wikipedia.org/wiki/%E4%B8%8D%E8%A6%8F%E5%89%87%E5%8B%95%E8%A9%9E[Other irregular verbs]. 得る is the only remaining nidan verb.
+* にて particle is the ancestor of で (http://www.imabi.net/ninitee.htm[Imabi])
+* Comparing https://japanese.stackexchange.com/questions/21461/
+* https://japanese.stackexchange.com/questions/11473/11475#11475[Etymology of 〜ないで]
+* https://japanese.stackexchange.com/questions/2706/[Etymology of 出来る・できる]
+* https://japanese.stackexchange.com/questions/6922/[Etymology of 面白い]
+* https://en.wikibooks.org/wiki/Japanese/Grammar/Transitivity[Mostly useless classification of transitive/intrasitive pair forms]
+* Eytmology of hiragana and katakana (https://japanese.stackexchange.com/questions/4281/[Japanese Stack Exchange])
+* Sentences that end with を、に (ellipted predicates) {TODO}
+* Attaching to verb plain forms (終止形) https://japanese.stackexchange.com/questions/46930/46936[に], https://japanese.stackexchange.com/questions/2959/[は], https://japanese.stackexchange.com/questions/36714/[が] without nominalisation. They are actually attached to the 連体形. A relic of Classical Japanese.
+
+// api_set_lang: zh
+== 第一个话题
+
+從此開始
