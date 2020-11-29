@@ -1,15 +1,16 @@
 // api_set_lang: en
-:title: 
+:title: Japanese Grammar Supplements
 // api_set_lang: zh
-:title: 
+:title: 日語語法補習
 // api_set_lang: ALL
-:author:       
-:date-created: Mon, 23 Nov 2020 16:48:53 +0800
-:date-updated: Mon, 23 Nov 2020 16:48:53 +0800
-:tags:         
 
 // This is overwritten during compilation by file API
 :imagesdir: ../images
+
+:author:       Aryailia
+:date-created: Mon, 23 Nov 2020 16:48:53 +0800
+:date-updated: Mon, 23 Nov 2020 16:48:53 +0800
+:tags:         Japanese
 
 // api_set_lang: en
 
@@ -153,6 +154,4 @@ Enirac Sum, 'File:Yotsugana.png', __Wikipedia, The Free Encyclopedia__. Wikipedi
 * Attaching to verb plain forms (終止形) https://japanese.stackexchange.com/questions/46930/46936[に], https://japanese.stackexchange.com/questions/2959/[は], https://japanese.stackexchange.com/questions/36714/[が] without nominalisation. They are actually attached to the 連体形. A relic of Classical Japanese.
 
 // api_set_lang: zh
-== 第一个话题
-
-從此開始
+nothing
