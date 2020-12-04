@@ -11,6 +11,7 @@
 :date-created: Mon, 23 Nov 2020 16:48:53 +0800
 :date-updated: Mon, 23 Nov 2020 16:48:53 +0800
 :tags:         Japanese
+:series:       
 
 // api_set_lang: en
 

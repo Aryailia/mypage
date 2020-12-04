@@ -9,6 +9,7 @@
 :date-created: Mon, 16 Nov 2020 01:51:47 +0800
 :date-updated: Mon, 16 Nov 2020 01:51:47 +0800
 :tags:         Programming Terminal Unicode
+:series:       Terminal
 
 // api_set_lang: en
 
