@@ -1,0 +1,390 @@
+// api_set_lang: en
+:title: Hosting Updating Data and Sites with GitHub Actions
+// api_set_lang: ALL
+
+// This is overwritten during compilation by file API
+:imagesdir: ../images
+
+:author:       
+:date-created: Wed, 23 Dec 2020 02:46:02 +0800
+:date-updated: Wed, 23 Dec 2020 02:46:02 +0800
+:tags:         Programming Self-Hosting
+:series:       
+
+// api_set_lang: en
+
+Having banged my head against GitHub actions for a single project for long enough, here is a distillation of that experience.
+I will be assuming knowledge of the basic git workflow and of YAML, the data-entry-friendly form of JSON.
+
+Much of the explanation resolves around security.
+If have a good grasp of the various security trade-offs, feel free to only read the tips, notes, and examples.
+These should communicate the GitHub-actions-specfic behaviour.
+
+
+== A motivating example
+
+I took on the task of providing an easily-searchable archive of a YouTube channel with thousands of videos.
+Additionally, I wanted to make it a static site{wj}footnote:[
+A static site means all pages are pre-generated, as oppose to a https://en.wikipedia.org/wiki/Dynamic_web_page[dynamic web page] where the server generates the HTML—usually in response to your client data—before sending it to your browser.
+GitHub has free hosting via a feature called https://pages.github.com/[GitHub pages].
+An illustrative example would indeed to be to display search results.
+With a purely static site, every video would have to be in a single HTML file sent to your browser; with a dynamic site, the server can curate a list before sending it to your browser.
+] (as I am a fan of the lean internet) that, ideally would update and build itself.
+Enter, GitHub actions.
+
+GitHub actions are CI/CD, which are essentially docker instances that will run depending on various triggers like pushing to a branch or on a schedule (yes, even to free users, see https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions[this page] for limits).
+Docker images are essentially computer instances where you can control what comes pre-installed via a config file.{wj}footnote:[<<Docker,See section on Docker>>]
+Thus I can have one runner ('workflow' in GitHub Action terminology), i.e. a GitHub computer, run the build step of the static site and a second runner download channel updates.
+
+== Debugging
+
+TIP: If you want to debug, I would suggest working including workflow dispatch and.
+
+[source,yaml]
+----
+name: Name
+on:
+  workflow_dispatch: # include this for manual
+  push: [main]
+jobs:
+  push_with_password:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make a change
+        run:  pwd
+----
+
+Some useful external commands you can run from bash are:
+
+
+[source,sh]
+----
+command -v name  # See if this command exists (prints path)
+pwd  # Where you are currently
+----
+
+TIP: You do get sudo access for example, e.g. `sudo pip3 install youtube-dl`
+
+== Pushing updates from a GitHub action
+
+There are two ways to push/save to a branch on GitHub: via password authentication or via SSH authentication.
+The trade-off between the two is best viewed in light of managing identity and security.
+
+=== Password authenticated pushing
+
+Password authentication is simplier to setup but it ties an identity with an email address (which themselves are themselves require their own password).
+I would want to differentiate my own commits from automatic commits; thus, I recommend that you to setup a new account on GitHub, which requires a new email address.
+
+You can reuse this identity as the pusher for all your GitHub action pushes.
+You would store the password per-repository (so changing passwords would be painful if you use this method for multiple repositories) under secrets in the settings for a specific repository.
+Even though other contributers and admins will not be able to view this secret, I would feel uncomfortable storing passwords in a place where GitHub could potentially view it or having them accessible via the internet at all.
+
+
+.Make sure the name of the private key in this YAML file matches the name you choose in your repository's secret settings.
+[source,yaml]
+----
+name: Video metadata weekly download
+on:
+  push: [main]
+
+jobs:
+  push_with_password:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning main -> the VM's "./"
+        uses: actions/checkout@v2  # From the marketplace, by GitHub
+
+      - name: Make a change
+        run:  printf %s\\n asdf >'newfile'  # This creates the file named 'newfile'
+
+      - name: Commit and push to main
+        run: |  # Multiple lines
+          # These affect what show up in `git log`
+          git config user.email "<this-can-be-anything@domain.com>"
+          git config user.name "<This can be any Name>"
+          git add 'newfile'
+          git commit -m 'a new file'
+
+          <<EOF git credential-osxkeychain store
+          ${{ secret.PUSH_PASSWORD }}
+          EOF
+
+          git push origin main
+----
+
+TODO: test secret if EOF with:
+```
+<<EOF cat -
+${{ secret.TEST }}
+EOF
+```
+=== SSH authentication
+
+==== Generating the key pair
+
+SSH authentication in practice, through the math of public-key encryption,{wj}footnote:[<<Public-key Cryptography, See section on public-key cryptography>>] guarantees a unique identity.
+
+You generate an SSH key (https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent[link to GitHub tutorial]):
+
+[source,sh]
+----
+ssh-keygen -t ed25519 -C "your_email@example.com"
+----
+
+
+'RSA-4096' and 'ed25519' are two different algorithms for generating, the latter being more secure.{wj}footnote:[TODO]
+The email address you provide here is what will be use to identify the author of the commits pushed by this key pair on GitHub.
+Note, you can have several keys associated to a single email address.
+
+You must explicitly authorize a key pair to be able to push commits with and, on GitHub, you have two options: storing a public in either your https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account[account settings] (for use on all your repositories) or in a specific repository—private key goes under secrets, public key goes under deploy keys in a specific repository's settings, https://docs.github.com/en/free-pro-team@latest/developers/overview/managing-deploy-keys#deploy-keys[link to GitHub's tutorial].
+
+The best practice is to generate a key pair for individual repositories, following the principle of: if it doesn't need to access it, don't give it access.
+And by the same logic, it is best practice to have at most one copy of any one private key.{wj}footnote:[
+Given my current knowledge, the best practice for key management is to do your key generation on an https://en.m.wikipedia.org/wiki/Air_gap_(networking)[air-gapped] computer to generate key pairs. An air-gapped computer is one that never touches an external network like the internet, to which you only transfer files physically through medium like thumbdrives.
+You then generate signing, encryption, or authentication https://wiki.debian.org/Subkeys[subkeys] as necessary, transferring them out physically to a computer that has internet access for your everyday use.
+GPG can be used as a substitute for `ssh-keygen`.
+]
+Because the identity is associated with the key pair itself by mathematics (rather than on the authority of your GitHub username + password), creating a key pair is like making a new account specific for this repository with a secure (i.e. randomly-generated) password.
+
+
+==== Configuring GitHub Actions
+
+So now you should have generated your key pair, uploaded public key to your GitHub account or your GitHub repository's deploy keys (I recommend the latter), and uploaded the private key to your GitHub repository's secrets.
+
+SSH authentication works via a SSH handshake, which, for the user (you), means you first poll a keyserver for the publicly available public key and signature of the site (https://github.com) and verify its signature, i.e. verify GitHub's identity.
+If this fails, it likely means someone is trying to tamper with the connection, and we should not proceed with any further action, in lieu of consulting a security professional.
+
+You can find the fingerprint at on https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/githubs-ssh-key-fingerprints[GitHub's website].
+
+
+.Make sure the name of the private key in this YAML file matches the name you choose in your repository's secret settings.
+[source,yaml]
+----
+name: Video metadata weekly download
+on:
+  push: [main]
+
+jobs:
+  push_with_ssh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify then add GitHub SSH key
+
+        # Also thanks to: https://serverfault.com/questions/856194/
+        # RSA fingerprint: https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/githubs-ssh-key-fingerprints
+        run: |
+          [ "$( ssh-keyscan -t rsa github.com | tee github-key-temp | ssh-keygen -lf - 2>/dev/null )" \
+          = "2048 SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8 github.com (RSA)" ] \
+          || { printf "Invalid GitHub SSH key" >&2; exit 1; }
+          mkdir ~/.ssh
+          cat github-key-temp >>~/.ssh/known_hosts
+          rm -r github-key-temp ~/.ssh
+
+          eval "$( ssh-agent -a "$SSH_AUTH_SOCKET" )"   # ssh-agent prints out shell commands
+          <<EOF ssh-add -
+          ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          EOF
+
+      - name: Cloning main -> the VM's "./"
+        uses: actions/checkout@v2  # From the marketplace, by GitHub
+
+      - name: Make a change
+        run:  printf %s\\n asdf >'newfile'  # This creates the file named 'newfile'
+
+      - name: Commit and push to main
+        env:
+          SSH_AUTH_SOCKET: /tmp/ssh_agent.sock
+        run: |
+          # These affect what show up in `git log`, but the email address in
+          # the public key is what determines the author of a commit on GitHub.com
+          git config user.email "<this-can-be-anything@domain.com>"
+          git config user.name "<This can be any Name>"
+          git add 'newfile'
+          git commit -m 'a new file'
+          git push origin main  # This goes through ssh
+----
+
+TODO: test if this rm -r work properly in authentication step
+
+=== Notes
+
+In my specific use case, I wanted to push all downloaded video metadata to a separate branch and to have my static site generator to also push its compiled files to a separate branch.
+Additionally, GitHub Pages serves sites from either the `docs` folder or from main directory of the branch of your choice.
+However, files that are prefixed with underscore '_' will not be served.
+I wanted to keep my builder files separate from the end-product compiled files, and I wanted the git histories separate.
+
+Creating the branch from a home branch is easily accomplished by:
+
+[source,sh]
+----
+git subtree split --prefix <folder-name> --branch <branch-name>
+----
+
+Pushing the this branch, I made use of the 'force' flag so I would not have to deal with conflicts (additionally, the git history of these types of pushes is largely superfluous).
+
+[source,sh]
+----
+git push --force origin <branch-name>
+----
+
+You can see my implementation at:
+
+* https://aryailia.github.io/[public-facing GitHub Pages webiste]
+* the source code for https://github.com/Aryailia/aryailia.github.io[said statically-generated site]
+* the source code for the https://github.com/Aryailia/a-bas-le-ciel-data[automatic YouTube metadata scrapper]
+
+
+== Triggering other workflows
+
+There's four ways to trigger workflows:
+
+* Manually, i.e. clicking 'Run job' in the GitHub Actions tab of a repository.
+These type of events are under `workflow_dispatch` in the action's YAML definition.
+* Via GitHub's https://docs.github.com/en/free-pro-team@latest/rest/overview[REST API].
+In particular, we want to trigger to https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#create-a-repository-dispatch-event[repository dispatches], and these events are labelled under `respository_dispatch` in the action's YAML definition.
+* <<Triggering events by pushing>> (e.g. pushing to a branch)
+* Including multiple jobs in a single action's workflow YAML. See the section on <<Flow control>>
+
+=== GitHub's API: Repository Dispatch
+
+GitHub has a very good https://github.com/cli/cli[CLI tool] to interact with GitHub's API.
+However, we only need `curl` or similar tool to issue a HTTP POST request to trigger a repository dispatch event.
+
+There are four ways of authenticating your requests (or on GitHub's https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/about-authentication-to-github#authenticating-with-the-api[documentation page]); I only have experience with PATs:
+
+* Personal Access Token, which you can https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token[generate via GitHub's website] or https://github.com/cli/cli/issues/2531[generate via the CLI in the future]
+* TODO: Password entry: I believe this is possible to provide passwords with curl
+* Web application flow, also known as OAuth.  The OAuth handshake is possible to do with just `curl` https://gist.github.com/btoone/2288960[as shown here].
+* GitHub App: From my understanding, the GitHub App essentialy acts as the OAuth authority, and you do something similar to an OAuth handshake with it instead of GitHub.
+
+In other words, there is no authorisation you can make specific to a single repository.
+
+For the personal access token method, once you have made the token and copied it, paste it into your repository's secrets.
+Then you ca
+
+[source,yaml]
+----
+name: Repository dispatch example
+on: push
+jobs:
+  trigger_repo_dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Issue a repository dispatch
+        run: |  # Multi-line input
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+          https://api.github.com/repos/Aryailia/aryailia.github.io/dispatches \
+          -d '{"event_type":"Update"}'
+          # If you want to provide a payload
+          #-d '{"event_type":"Update","client_payload":{"key":"value"}}'
+----
+
+TIP: If you are uncertain about the how multi-line input works in YAML, I would recommend debugging out with: +
+`<action.yml yq -r '.jobs.trigger_repo_dispatch.steps.run'`
+
+In the second branch this can selected by:
+
+.Make sure the value for the event_type is the same
+[source,yaml]
+----
+name: Repository dispatch example
+on:
+  repository_dispatch:
+    type:
+      - Update
+      - A second event type if you want
+# alternatively, to trigger on all repository dispatch events:
+####
+#on:
+#  respository_dispatch
+
+jobs:
+  trigger_repo_dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Issue a repository dispatch
+        #if: ${{ github.event.action == "Update" }}
+        #if: ${{ github.event.client_playload.key == "value" }}
+        run: echo yo
+----
+
+=== Trigger events by pushing
+
+Another option is you can push a branch that has a GitHub action to trigger it as demonstrated in <<Pushing updates from a GitHub action>>.
+
+TIP: An action that triggers on `push` will trigger on `--force` pushes even if they do not change anything.
+
+NOTE: On `push` trigger, the GitHub action must exist on the branch it triggers from.{wj}footnote:[Edward Romero, 'Don't trigger action on pushing new branch to remote', Available at: <link:https://stackoverflow.com/questions/65434755/[]>]
+So if you specify `push: [branch-name]`, the branch `branch-name` needs to have the YAML file.
+
+I would reserve a folder name via `.gitignore`, `git clone <repo> <folder>` to said folder, then `git -C <folder> push --force origin main`.
+And because these are containers, you do not need to cleanup, i.e. do not need to delete this cloned directory.
+
+== Flow control
+
+Broadly, in a single GitHub action or *workflow* (i.e. per single YAML file), you specify the triggers (*on*), which then run several *jobs*; each job has several *steps*.
+The value of `run` specifies a script, the non-login script by defalut ('bash' for ubuntu-latest){wj}footnote:[
+'Workflow Syntax for GitHub Actions', Github, Inc., Available at: <link:https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepsrun[]>
+]
+
+
+* In the `run` field of a step, if any command exits with a non-zero error code, the current job will terminate.
+* If you `exit 0` (POSIX shell command), then you can terminate a step early (other steps will continue to run)
+* You can add 'if statements' to both `steps` and `jobs`, e.g.
+
+.From https://stackoverflow.com/questions/60589373/#61832535[stackoverflow]
+[source,yaml]
+----
+jobs:
+  check:
+    outputs:
+      status: ${{ steps.early.conclusion }}
+    steps:
+      - id: early
+        name: Early exit
+        run: # exit_with_success
+  work:
+    needs: check
+    if: needs.check.outputs.status == 'success'
+    steps:
+      - run: foo
+      - run: ...
+----
+
+
+== Appendix
+
+=== Docker
+Docker was the pioneer of this new wave of efficient, spawnable virtual machines.
+Docker images solve the problem of software distribution/installation, and continuous integration was more a consequence.
+
+Dynamic libraries, dependencies on software that is updated independently of your own(so you almost definitely have multiple versions of a single program), different system calls due to OS, etc. means that getting software to run reliably was actually quite difficult; docker images provide a reliable environment.
+Additionally, being a containerised "virtual machine" means that the internal docker image cannot know about the external system, good for security.
+
+[quote, Solomon Hykes, Co-founder of Docker]
+____
+If WASM+WASI existed in 2008, we wouldn't have needed to created Docker.{wj}footnote:[
+Hykes, Solomon, Twitter, 27 Mar 2019,
+Available at <link:https://twitter.com/solomonstre/status/1111004913222324225[]>,
+Archived at <link:https://nitter.net/@solomonstre/status/1111004913222324225[]>
+]
+____
+
+=== Public-key Cryptography
+
+See the MIT missing semester course on https://missing.csail.mit.edu/2020/security/[Security and Cryptography] for a video explanation.
+
+Public-key cryptography, by utilising the comparative asymmetric difficulty doing an operation vs doing its inverse, generates two linked keys, a public and private key.
+An example of an asymetrically difficult operation is prime factoring a number  vs multiplying said factors, central to popular cryptographic algorithms such as https://en.wikipedia.org/wiki/RSA_(cryptosystem)[RSA].
+//pass:p[ +]
+//pass:p[ +]
+
+The public key is meant to be shared is like your username; the private key is equivalent to a password.
+Uploading your key to GitHub verifies that you (the person) are authorising this key to be used on your behalf, because you have to login with your password to upload your key.
+Alternatively, the general case is uploading your public to a key server: this authorises your key to act on your behalf by going through an additional step of having other people verify your key for you (this is known as the https://en.wikipedia.org/wiki/Web_of_trust[web of trust]).
+
+Another nice property of this public–private key split is that proof of identity (called a signature) is easy to provide essentially by encrypting the work you are notarising with your private key.
+Since your public key is—well—public, it easy for anyone to run verification on your signature + the project.
+

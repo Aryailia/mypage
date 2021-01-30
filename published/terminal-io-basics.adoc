@@ -1,0 +1,184 @@
+// api_set_lang: en
+:title: Terminal IO Basics
+// api_set_lang: ALL
+:imagesdir: ../images
+
+:author:       
+:date-created: Sat, 14 Nov 2020 15:03:54 +0800
+:date-updated: Fri, 29 Jan 2021 15:03:54 +0800
+:tags:         Linguistics Programming Terminal
+:series:       TextBrowser2.0
+
+// api_set_lang: en
+
+== The Default Use Case (Cooked/Canonical Mode)
+
+Terminal applications interact with the screen via STDIN annd STDOUT/STDERR.
+This puts the burden of drawing text to the screen on the terminal program.
+In Linux, this means calling ioctl, which in turn means the Operating System does the drawing.{wj}footnote:[
+TODO source code example like st's source code or actual reference
+]
+GUI applications, by contrast, make calls to WinAPI/X windows/Wayland to make a window and to fill said window.{wj}footnote:[TODO]
+Or for the latter step, they may make calls to graphics libraries like OpenGL, DirectX, Vulkan that manage calls to the Operating System and graphics card.{wj}footnote:[TODO]
+
+STDIN and STDOUT/STDERR are https://en.wikipedia.org/wiki/Stream_(computing)[streams] that are essentially abstractions that give programs a one-pass start-to-end interface to communicate with other programs and files.{wj}footnote:[
+I believe most Operating Systems and programming languages standardized on this after the C language came out, though I do not have a source for this.
+]
+
+In Rust, printing ASCII is fairly easy:
+
+.Rust
+[source,rust]
+----
+println!("Hello world 1");
+// Alternatively
+use std::io::{stdout, Write};
+write!(stdout(), "Hello world 2\n");
+----
+
+To do anything more complicated than just dumping data to the terminal (colours, deleting characters, etc.), you have to make use of https://en.wikipedia.org/wiki/ANSI_escape_code[ANSI escape codes] (dependant what your terminal supports).
+
+.Rust
+[source,rust]
+-----
+let red = "\x1b[31m";   // text colour (not background)
+let clear = "\x1b[0m";
+write!(stdout(), "{}I am red text{}, and I am not", red, clear);
+-----
+
+.POSIX Shellscript
+[source,sh]
+-----
+RED='\033[31m'   # text colour (not background)
+CLEAR='\033[0m'  # \033 is octal for 0x1b (base 16) or 27 (base 10)
+printf %b "${RED}I am red text${CLEAR}, and I am not"
+-----
+
+This default mode (canonical/cooked mode) affects how you receive input from STDIN.
+Cooked mode means preprocessing is done on the input, mainly that the abort button `Ctrl-C` works and that input is buffered until `Enter` is pressed.
+
+.Rust
+[source,rust]
+----
+use std::io::{Read, stdin};
+let mut s = String::new();
+stdin().read_line(&mut s);
+----
+
+See the *Canonical and noncanonical mode* section in the https://man7.org/linux/man-pages/man3/termios.3.html[termios manual] or crossterm's documentation on https://docs.rs/crossterm/0.18.2/crossterm/terminal/index.html#raw-mode[raw mode].
+
+
+== More Modes
+
+*Canonical mode* or *cooked mode*, detailed above, serves the default use case of automating tasks when you just want to prompt the user for filenames, passwords, etc.
+By contrast, *non-canonical mode* or *raw mode* serves the cases when you want to process keypress-by-keypress for a more interactive user interface (pretty much any CLI/TUI program).
+In fact, there is no way to read keypress-by-keypress via STDIN (as per standard C){wj}footnote:[
+https://stackoverflow.com/questions/10004895/#answer-10005522[C - Reading from stdin as characters are typed] "If you really want the characters "as they are entered", you cannot use C io. You have to do it the unix way. (or windows way)"
+]{wj}footnote:[
+TODO find a more authoritative source on how C streams work.
+]
+
+*Framebuffer mode*, is in contrast to https://en.wikipedia.org/wiki/Text_mode[*text mode*], is a way directly draw pixels on Linux.
+Typically Linux distributions start in framebuffer mode to display a logo and then runs https://wiki.archlinux.org/index.php/Getty[getty] and then your terminal (typically bash).
+Framebuffer mode is mutually exclusive to the graphical server and usually you do not interact with framebuffer mode when making terminal programs, but it is good to know about.
+
+Terminals have the concept of two buffers called the *main screen* and the *alternative screen*.
+I am not sure as to how exactly the underlying mechanics of this work, however switching between the two are typically signaled via a popular, but non-standard escape sequence.{wj}footnote:[
+Wikipedia contributors. (2020, November 4). ANSI escape code. In Wikipedia, The Free Encyclopedia. Retrieved 17:14, November 15, 2020, from https://en.wikipedia.org/w/index.php?title=ANSI_escape_code&oldid=987087722. "Some popular private sequences: CSI ? 1049 h | Enable alternative screen buffer"
+]
+{wj}footnote:[
+TODO look for reference in st source code
+]
+
+Another option is programs such as https://github.com/seebye/ueberzug[überzug] and https://github.com/tats/w3m[w3m]-img works.
+I believe they work by drawing over other windows.{wj}footnote:[
+TODO find source code references for how drawing works. Also find w3m-img source code link.
+]{wj}footnote:[
+seebye. https://github.com/seebye/ueberzug/issues/30#issuecomment-463842359[Wayland compatibility, failure]. GitHub, Inc. "As far as I know wayland isolates windows from each other, so ueberzug can't work as a wayland client."
+]{wj}footnote:[
+seebye. https://github.com/seebye/ueberzug/issues/103#issuecomment-641350200[Ueberzug issue 103: awareness of urxvtd]. GitHub, Inc. "The current model also only works thanks to the free desktop standard."
+]{wj}footnote:[
+Declspeck. https://github.com/alacritty/alacritty/issues/1021#issuecomment-35918481[Alacritty issue #1021: w3mimgdisplay not working correctly]. 2018-01-21. "Turns out that w3mimgdisplay directly draws on the X11 window of the terminal."
+]
+
+
+
+== Windows vs Unixes
+
+In Linux most terminals should support ANSI escape codes, which I explain later on.
+
+As of the anniversary update of Windows 10 in 2016, ANSI.sys began being packaged with Win10 supporting ANSI codes.{wj}footnote:[
+TODO find better citation.
+https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences[Docs: Console Virtual Terminal Sequences]. Microsoft, 2020. 2018-12-07.
+]
+On Win10, you will need to a compliant terminal such as bash bundled with the https://git-scm.com/[git], cygwin, Emacs, gvim, etc. to make use of ANSI codes, and thereupon based terminal applications.
+For Windows specifically, you must perform a one-liner to enable ANSI mode.{wj}footnote:[
+Using the https://github.com/ogham/rust-ansi-term[ansi_term] crate in Rust, you can enable ANSI on Win10 `let enabled = ansi_term::enable_ansi_support();`
+]{wj}footnote:[
+https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences[Docs: Console Virtual Terminal Sequences]. Microsoft, 2020. 2018-12-07.
+"The following terminal sequences are intercepted by the console host when written into the output stream, if the ENABLE_VIRTUAL_TERMINAL_PROCESSING flag is set on the screen buffer handle using the SetConsoleMode function."
+]{wj}footnote:[
+https://docs.microsoft.com/en-us/windows/console/setconsolemode
+]
+
+== Libraries
+
+I would recommend the following crates for making terminal applications:
+
+* https://github.com/ogham/rust-ansi-term[ansi_term] for a more minimalist resource (supporting the Unixes and Win10 or newer), but you cannot query the dimensions of the terminal. You need to call ioctl for that.{wj}footnote:[
+https://github.com/redox-os/termion/blob/11fbe7155681c3c87495a2fa8ee9f822b18e2b2a/src/sys/unix/size.rs#L14-L20[termion/src/sys/unix/size.rs]. GitHub, Inc., 2020. Hash 0x11fbe71556. Line 14 to line 20.
+]
+
+* https://github.com/crossterm-rs/crossterm[crossterm] to support down to Win7 and with better IO.
+* https://gitlab.redox-os.org/redox-os/termion[termion] if you do not care for Windows.
+
+Widget libraries typically build on top of the above:
+
+* The ncurses framework
+* Tuirs
+
+== Clarifying Jargon
+
+Nowadays, the following three terms essentially all refer to the same thing.
+
+A __**terminal**__ use to refer to the physical devices such as https://en.wikipedia.org/wiki/VT100[this].
+_Terminals_ where developed for workflow of one terminal per user, which served as the computer's user interface, to economically use computers back when they were expensive (see https://en.wikipedia.org/wiki/Timesharing[timesharing]).
+
+Now _terminal_ mostly refer consoles/command lines/terminal emulators/etc. whose defining feature the same workflow as the terminals of old: manging input and output as text via STDOUT and STDIN.
+
+A __**terminal emulator**__ is a program like (st, urxvt, xterm) which specifically try to emulate the terminals of olds (i.e. suports VTxxx escape sequences, see https://www.vt100.net/[VT100.net] by Paul Flo Williams)).
+Typically, modern terminal emulators support the VT100 series.{wj}footnote:[
+Williams, Paul Flo. https://www.vt100.net/[VT100.net]. 2020. "VT100 Series. Probably the most famous terminal name in the world, and the most emulated"
+]{wj}footnote:[
+https://st.suckless.org/[st - simple terminal]. suckless.org, 2020. "most VT10X escape sequences" and "Ideally, there would be a general tty widget and then vt102..."
+]{wj}footnote:[
+https://linux.die.net/man/1/urxvt[urxvt(1) - Linux man page]. die.net. "a VT102 emulator for the X window system"
+]
+However, programs like https://github.com/nushell/nushell[Nushell], [PowerShell], and http://en.wikibedia.ru/wiki/Command_prompt_(Windows)[Cmd] are _not_ terminal _emulators_ because they do not emulate the VTxxx instruction sets, but I would still call them _terminals_.
+
+I believe the term __**console**__ comes from the panels used to control machines.{wj}footnote:[
+I am probably never going to put in the research to verify the etymology for _consoles_. See definition one of https://www.oxfordlearnersdictionaries.com/definition/english/console2[console] in the Oxford dictionary.
+]
+For software, for this narrow sense, I think of game consoles (a drop down windows/menu primarily to allow the developer access to convenience functions, e.g. teleporting to a level).
+_Console_ in a broader sense is used as a synonym for a terminal, as a terminal is the interface through which you use your computer.
+
+
+As far as I can tell, there is no difference between *CLI* (Command Line Interface) and *TUI* (Terminal User Interface).
+
+The __**shell**__ is the default program that runs inside a terminal that expects the terminal to be an output.
+A __shell__ is just a REPL environment for a programming language (usually each shell implements its own flavour of programming language).
+Typically the shellscripts are designed for the domain of primarily using external (i.e. other people's programs).
+And in fact, people do use python, ruby, perl, etc. as their shell though it tends to be more unwiedly for this use case.
+Compare:
+
+.Rust
+[source,rust]
+----
+std::process::Command("sed").args(&["s/i/t/g", "foo.txt"], ).output().unwrap()
+----
+
+.POSIX shellscript
+[source,sh]
+----
+sed 's/i/t/g' foo.txt
+----
