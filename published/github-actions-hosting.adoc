@@ -1,5 +1,5 @@
 // api_set_lang: en
-:title: Hosting Updating Data and Sites with GitHub Actions
+:title: Dynamic Static Sites with GitHub Actions
 // api_set_lang: ALL
 
 // This is overwritten during compilation by file API
