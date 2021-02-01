@@ -9,7 +9,7 @@
 
 This is an archive of http://www.ibm.com/developerworks/library/u-secret +
 Archive.org link: https://web.archive.org/web/20131216023226/https://www.ibm.com/developerworks/library/u-secret.html +
-I added the sections as the archive.org link did not perseve them. +
+I added the sections as the archive.org link did not preserve them. +
 
 Suzanne Topping (stopping@bizwonk.com) +
 Vice president, BizWonk, Inc. +
@@ -39,7 +39,7 @@ Given the large number of users in Japan and China, and the complexity of East A
 
 This section discusses the largest areas of concern for CJKV characters and languages.
 
-=== Han Unificatoin
+=== Han Unification
 
 In order to support Chinese, Japanese, Korean, and Vietnamese, encoding for many thousands of ideographs must be provided. A subset of all these ideographs occurs in the four writing systems. This set of characters is referred to as Han, because it originated in China during the Han dynasty. Han Unification is the process of assigning single code points to the Han characters. The resulting set of coded ideographs is called UniHan.
 
