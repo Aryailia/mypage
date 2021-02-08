@@ -8,7 +8,7 @@
 :author:       
 :date-created: Sun, 27 Dec 2020 02:58:04 +0800
 :date-updated: Wed, 03 Feb 2021 04:56:57 +0800
-:tags:         Japanese
+:tags:         Linguistics Japanese Mandarin
 :series:       PitchAccent
 
 // api_set_lang: en
@@ -18,6 +18,7 @@ The answer to the titular question comes two parts: yes, Japanese does have tone
 
 This article is primarily directed at people who already began their pitch-accent education journey and those who are curious about a comparison of Japanese and Mandarin (my tone language representative).
 In this article, Japanese always refers to Standard Japanese (標準語) and Mandarin always refers to Standard Mandarin (aka. 華語/國語/普通話).
+I `/mama/` is IPA broad translation syntax, but I use it in this article for pinyin or Hepburn rōmaji.
 
 == Defining Tone
 
@@ -48,14 +49,18 @@ NOTE: Intonation is also a phenomenon that works via pitch. An example of intona
 
 (TODO) I have written a more detailed introduction _here_.
 
-In Japanese, an _accent_ refers to how a specific mora in a word, known as the _accent kernal_, is chosen, after which every following mora is said at a meaningfully lower pitch.
 If written out as kana, Japanese is essentially one kana equals one *mora*.
+Specifically in Japanese, a _syllable_ will have multiple mora when it is a long vowel (長音 e.g. そう `/sō/`), nasals 鼻音 (e.g. さん `/san/`), and germinated consonants (まっ(せ) `/mas.se/`).
+An example of a three-morae syllable is コーン ('corn' or 'cone', `/kōn/`).
+
+In Japanese, an _accent_ refers to how a specific mora (モーラ, counted word 拍) in a word, known as the _accent kernal_ (核), is chosen, after which every following mora is said at a meaningfully lower pitch.
+One way dictionaries indicate this kernal is via `[0]`, `[1]`, etc. where the number indicates the mora that is the kernal, and where `[0]` indicates an unaccented lexeme.
 Or if a word is unaccented, then the pitch does not drop (at least not for _accent_ reasons, e.g. excluding adding emphasis).
 
 Kawahara describes Japanese pitch accent as a lexical pitch property (so every word in a language has a set pitch pattern) that has a ‘contrastive function’{wj}footnote:[<<Kawahara,Kawahara>>, 9] and lists four rules for Japanese pitch accent:
 
 . Long syllables only have the downstep between the first and second sonorant. A _long syllable_ in Japanese is an `[optional consonant +] vowel + sonorant`, which could be one of three things: long vowel e.g `/カー/` (as in お母さん), diphthong e.g. `/カイ/` (as in 正解), or nasal e.g. `/カン/` (as in 感じ).
-. The morae from the second mora to the accented mora (kernel 核), including the kernal, are high
+. The morae from the second mora to the accented mora, including the kernal, are high
 . The morae after the kernel are low
 . The first mora is low unless it is accented
 
@@ -65,18 +70,18 @@ L for low, H for high
 
 (Dictionary entry looks like: 鼻・はな[0])
 ha na ka ra (鼻から)
-   H  H  H
-L
+   2  3  4
+1
 
 (Dictionary entry looks like: 端・はな[1])
 ha^na ka ra (はなから—usually written in hiragana)
-H
-   L  L  L
+1
+   2  3  4
 
 (Dictionary entry looks like: 花・はな[2])
 ha na^ka ra (花から)
-   H
-L     L  L
+   2
+1     3  4
 ```
 
 から is unaccented and から is listed as its own word in a dictionary, so is this a combination of two words or is から not a ‘real’ word for assign accent?
@@ -150,7 +155,8 @@ NOTE: The basic unit for tone (pitch accent) assignment is the mora in Japanese 
 This difference in production is somewhat of a red haring.
 Japanese articulating accents only across two units vs Mandarin articulating across one unit is not a difference inherent to pitch-accent language vs tone language; it is merely a difference of being two different languages.
 
-Cantonese can imitate the emulate the Japanese pitch pattern: e.g. 思路 (/si55 lou22/,{wj}footnote:[Sheik ‘link:http://www.cantonese.sheik.co.uk/dictionary/words/45807/[思路]’ accessed 20 January 2021] using jyutping and Y. R. Yuen's tone numerals here).
+Cantonese can imitate the Japanese pitch pattern: e.g. 思路 (/si55 lou22/,{wj}footnote:[Sheik ‘link:http://www.cantonese.sheik.co.uk/dictionary/words/45807/[思路]’ accessed 20 January 2021] using jyutping and Y. R. Yuen's tone numerals here).
+While this might be phonetically the same as Japanese, (phonologically) Japanese has only one tone whereas Cantonese has two.
 See https://youtube.com/watch?v=6_60Oec-8pg[this video] by Academia Cervena (and https://www.youtube.com/watch?v=lXp7_Sjgm34[this video] for foundational knowledge) describing how the Type 1a pitch-accent pattern occurs across one basic unit (the syllable) in Swedish.
 
 === Similarities
@@ -173,10 +179,9 @@ Thus, Mandarin units (syllables) with Tone 1–4 are analogous to accented Japan
 
 === Japanese pitch accent's similarity to tone sandhi
 
-Tone sandhi are tone rules that apply across word boundaries.{wj}footnote:[<<Yip,Ypi>>]
+Tone sandhi are tone rules that apply across word boundaries.{wj}footnote:[<<Yip,Yip>>, 116]
 (Remember that a _tone_ is defined for words.)
-Intuitively, this is essentially tone slurring.
-
+Intuitively, tone sandhi are essentially the rules for tone slurring.
 
 To a speaker, tone sandhi as similar to vowel devoicing in Japanese (e.g. です desu -> des, 教室 kyoushitsu -> kyoushts):
 
@@ -191,7 +196,7 @@ Some tone sandhi rules for Standard Mandarin are:
 These two work together in that you essentially only have a full Tone 3 when it is the final syllable of a sentence and before commas.{wj}footnote:[A citation would be nice]
 The natural question is, what happens when you have more than two T3's in sequence?
 
-Much like how I described partitioning a sentence into prosodic phrases for assigning accents in Japanese in <<Short intro to Japanese pitch accent>>, Mandarin similarily also partitions a sentence (compare <<Selkirk>> pg 37—referened earlier—for Japanese to <<Duanmu,Duanmu>> pg 296 for Mandarin, which employs the same hiearchy as Selkirk).
+Much like how I described partitioning a sentence into prosodic phrases for assigning accents in Japanese in <<Short intro to Japanese pitch accent>>, Mandarin similarily also partitions a sentence.{wj}footnote:[<<Selkirk>> (page 37) for Standard Japanese and  <<Duanmu,Duanmu>> (page 296) for Standard Mandarin both refer to a widely-used prosodic hiearchy]
 
 Let's look at an example to get a feel for it.
 <<Duanmu,Duanmu>> uses the following example to demonstrate how the syntax (which is determined by the meaning) of the sentence affects the application of sandhi rules.
@@ -210,7 +215,7 @@ Example taken from Duanmu.{wj}footnote:[<<Duanmu,Duanmu>>, 256]
 
 NOTE: Prescriptive grammar (i.e. what teachers in University have taught me), 3-2-3 is what people ‘should’ say for ‘to buy good wine’. Additionally, the first third tone actually turns into a half-third tone (半三聲).
 
-You see this happen in Japanese as well e.g. 昨日・キノー ‘yesterday’: it is unaccented (or 平板, heiban pattern, marked as [0] in dictionaries) as an adverb, but it has an accent on the [2] mora as a noun.{wj}footnote:[NHK ‘link:https://sakura-paris.org/dict/NHK%E6%97%A5%E6%9C%AC%E8%AA%9E%E7%99%BA%E9%9F%B3%E3%82%A2%E3%82%AF%E3%82%BB%E3%83%B3%E3%83%88%E8%BE%9E%E5%85%B8/exact/%E6%98%A8%E6%97%A5[昨日]’]
+You see this happen in Japanese as well e.g. 昨日・キノー ‘yesterday’: it is unaccented (or heiban pattern, 平板型) as an adverb, but it has an accent on mora [2] as a noun.{wj}footnote:[NHK ‘link:https://sakura-paris.org/dict/NHK%E6%97%A5%E6%9C%AC%E8%AA%9E%E7%99%BA%E9%9F%B3%E3%82%A2%E3%82%AF%E3%82%BB%E3%83%B3%E3%83%88%E8%BE%9E%E5%85%B8/exact/%E6%98%A8%E6%97%A5[昨日]’]
 In English you, an example is _REchord_ (noun) vs _reCHORD_ (verb) where the syllable in all-caps represents the syllable that accented (received primary stress).{wj}footnote:[Webster ’link:https://www.merriam-webster.com/dictionary/record[record]’]
 
 Tone 3 sandhi is affected by speech speed:{wj}footnote:[<<Duanmu,Duanmu>>, 258]
@@ -266,7 +271,7 @@ Surprisingly, Mandarin also expresses stress through tone, doing so via the neut
 
 * [[Kubozono]] Kubozono, Haruo (窪薗 晴夫). _The Organization of Japanese Prosody_. PhD Diss., University of Edignburgh, 1987, https://www.semanticscholar.org/paper/The-organization-of-Japanese-prosody-Kubozono/e670ee928aa9e6ad5222893abf351dea8eb27080[] (Only Vol 2)
 
-* _NHK Pitch Accent Dictionary_ (_NHK日本語発音アクセント辞典_). Tokyo: NHK Broadcasting Culture Research Institute (NHK放送文化研究所), 1943, https://archive.org/details/NHKJapaneseAccentDictionary1943[].
+* _NHK Pitch Accent Dictionary (NHK日本語発音アクセント辞典)_. Tokyo: NHK Broadcasting Culture Research Institute (NHK放送文化研究所), 1943, https://archive.org/details/NHKJapaneseAccentDictionary1943[].
 
 * [[Selkirk]] Selkirk, Elisabeth. ‘On Clause and Intonational Phrase in Japanses: The Syntactic Grounding of Prosodic Constitutent Structures’. _言語研究_ (_Gengo Kenkyu_, _Journal of the Linguistics Society of Japan_), 136, 1-39 (2009), http://people.umass.edu/selkirk/pdf/Selkirk2009GKprfs2.pdf[].
 
